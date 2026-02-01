@@ -11,7 +11,14 @@ GLPI_URL="http://localhost"
 #a partir desse ponto, todas as variáveis definidas ficam visíveis a subprocessos
 #source lê e executa comandos de um arquivo na sessão atual
 set -a
-source auth.env
+
+#aqui estamos pegando o nome do diretório atual:
+#o cd muda para o diretório, o -- faz com que tudo após ele seja argumento posicional
+#o "$(dirname -- "${BASH_SOURCE[0]}")" pega o caminho do script. Redirecionamos tanto o erro 
+#quando o resultado do cd para o null e caso o comando der certo, imprimios onde estamos
+DIRETORIO=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+
+source "$DIRETORIO/../auth.env"
 set +a
 #o comando anterior desativa o que foi definido em set -a
 
