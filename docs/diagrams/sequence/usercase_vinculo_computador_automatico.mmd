@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+
+    participant Usuario as Usuário
+    participant Mail as Mail Server (SMTP)
+    participant GLPI as GLPI
+    participant Sistema as Sistema de Integração
+
+    Usuario->>Mail: Envia e-mail de suporte
+    Mail->>GLPI: Entrega mensagem (SMTP)
+    GLPI->>GLPI: Processa e-mail
+    GLPI->>GLPI: Cria chamado
+
+    Note right of GLPI: Chamado criado via regra<br/>de e-mail / coletor
+
+    Sistema->>GLPI: Consulta chamados novos (API REST)
+    GLPI-->>Sistema: Lista de chamados
+
+    Sistema->>Sistema: Procura por computador no chamado
+
+    Sistema->>GLPI: Atualiza chamado\n(vincula o computador ao chamado)
+    GLPI-->>Sistema: Confirma atualização
