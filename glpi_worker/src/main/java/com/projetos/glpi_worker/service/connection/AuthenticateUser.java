@@ -1,93 +1,66 @@
 package com.projetos.glpi_worker.service.connection;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.StreamingHttpOutputMessage.Body;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
-public class AuthenticateUser {
+@Component
+public class AuthenticateUser implements Authenticate {
 
-    private final String URL;
-    private final String CLIENTE_ID;
-    private final String CLIENT_SECRET;
-    private final String USERNAME;
-    private final String PASSWORD;
-    private final String SCOPE;
+    private final GlpiConnectionProperties properties;
     private final WebClient webClient;
     private TokenResponse tokenResponse;
 
-    public AuthenticateUser(String URL, 
-        String CLIENTE_ID, String CLIENT_SECRET, String USERNAME, String PASSWORD, String SCOPE) {
 
-        this.URL = URL;
-        this.CLIENTE_ID = CLIENTE_ID;
-        this.CLIENT_SECRET = CLIENT_SECRET;
-        this.USERNAME = USERNAME;
-        this.PASSWORD = PASSWORD;
-        this.SCOPE = SCOPE;
-        
+    public AuthenticateUser(GlpiConnectionProperties properties) {
+        this.properties = properties;
         this.webClient = WebClient.builder()
-            .baseUrl(URL)
+            .baseUrl(properties.url())
             .build();
-
     }
+    
+
 
     public String getToken() {
-        
-        if (tokenResponse == null) {
-            authenticate();
-        }
-        return tokenResponse.access_token();
+    
+        return (tokenResponse == null) ? null : tokenResponse.access_token();
     }
 
     public String getTokenType() {
-        if (tokenResponse == null) {
-            authenticate();
-        }
-        return tokenResponse.token_type();
+        
+        return (tokenResponse == null) ? null : tokenResponse.token_type();
     }
 
-    public int getExpiresIn() {
-        if (tokenResponse == null) {
-            authenticate();
-        }
-        return tokenResponse.expires_in();
+    public Integer getExpiresIn() {
+
+        return (tokenResponse == null) ? null : tokenResponse.expires_in();
     }
 
     public String getRefreshToken() {
-        if (tokenResponse == null) {
-            authenticate();
-        }
-        return tokenResponse.refresh_token();
+        
+        return (tokenResponse == null) ? null : tokenResponse.refresh_token();
     }
 
     
-    public void authenticate() {
+    public void authenticate() throws WebClientException{
         
-        try{
-            
-        TokenResponse response = this.webClient.post()
+        tokenResponse = this.webClient.post()
         .uri("/api.php/token")
         .body(BodyInserters.fromFormData("grant_type", "password")
-                .with("client_id", CLIENTE_ID)
-                .with("client_secret", CLIENT_SECRET)
-                .with("username", USERNAME)
-                .with("password", PASSWORD)
-                .with("scope", SCOPE))
+                .with("client_id", properties.clientId())
+                .with("client_secret", properties.clientSecret())
+                .with("username", properties.username())
+                .with("password", properties.password())
+                .with("scope", properties.scope()))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
-        .block(); // Espera a resposta (Síncrono para o Shell)
-
-            System.out.println("Authentication successful!");
-        }catch(WebClientException e){
-
-            System.err.print("Error during authentication: "+e.getMessage());
-        }
-        catch(Exception e){
-            System.err.print("Unexpected error: "+e.getMessage());
-        }
-
-
-    }
+        .block();
+}
 }
