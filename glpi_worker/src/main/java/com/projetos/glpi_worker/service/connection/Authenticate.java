@@ -1,11 +1,12 @@
 package com.projetos.glpi_worker.service.connection;
 
+import ch.qos.logback.core.subst.Token;
+
 public interface Authenticate {
 
-    String getToken();
-    String getTokenType();
-    Integer getExpiresIn();
-    String getRefreshToken();
-    void authenticate();
+
+    TokenResponse authenticate(int timeoutSeconds);
+    TokenResponse refreshToken(String refreshToken, int timeoutSeconds);
+
 
 }

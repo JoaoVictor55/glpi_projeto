@@ -31,7 +31,7 @@ public class AuthenticationUserWireMockTest {
             "test-user",
             "test-pass",
             "test-scope",
-            "/api.php/token"
+            "/api.php"
         );
         
         authenticateUser = new AuthenticateWithPassword(config);
@@ -52,9 +52,9 @@ public class AuthenticationUserWireMockTest {
         .withBody("{\"access_token\":\"mock-token\",\"token_type\":\"Bearer\", \"expires_in\":3600}"))
         );
 
-        authenticateUser.authenticate();
+        var tokenResponse = authenticateUser.authenticate(2);
 
-        assert authenticateUser.getToken() != null && authenticateUser.getToken().equals("mock-token") : "Token de autenticação deve ser 'mock-token'";
+        assert tokenResponse.access_token().equals("mock-token") : "Token de autenticação deve ser 'mock-token'";
 
     }
 
@@ -72,17 +72,8 @@ public class AuthenticationUserWireMockTest {
         .withBody("{\"error\":\"invalid_client\",\"error_description\":\"Client authentication failed\"}"))
         );
 
-        try{
-
-            authenticateUser.authenticate();
-        }
-        catch(WebClientException e){
-
-            assert authenticateUser.getTokenType() == null : "Token type deve ser null em caso de falha";
-            assert authenticateUser.getToken() == null : "Token de autenticação deve ser null em caso de falha";
-            assert authenticateUser.getExpiresIn() == null : "Expires in deve ser 0 em caso de falha";
-            assert authenticateUser.getRefreshToken() == null : "Refresh token deve ser null em caso de falha"; 
-        }
+        assertThrows(WebClientException.class, ()->authenticateUser.authenticate(2));
+        
 
     }
 
@@ -95,6 +86,6 @@ public class AuthenticationUserWireMockTest {
         .withStatus(200)
         .withFixedDelay(2000)));
 
-        assertThrows(Exception.class, () -> authenticateUser.authenticate());
+        assertThrows(Exception.class, () -> authenticateUser.authenticate(2));
     }
 }

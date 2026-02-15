@@ -16,6 +16,7 @@ public class GlpiConstants {
         private String password = "password";
         private String scope = "scope";
         private String apiEndpointAuth = "/token";
+        private String refreshToken = "refresh_token";
     }
 
 }

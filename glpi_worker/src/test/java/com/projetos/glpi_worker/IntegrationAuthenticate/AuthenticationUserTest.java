@@ -15,8 +15,17 @@ public class AuthenticationUserTest {
 
     @Test
     void testAutenticacao() {
-        authUser.authenticate();
-        assert authUser.getToken() != null && !authUser.getToken().isEmpty() : "Token de autenticação deve ser gerado";
+        var tokenResponse = authUser.authenticate(2);
+        assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
+    }
+
+    @Test
+    void testExperiationTime(){
+
+        var tokenResponse = authUser.authenticate(2);
+
+        System.out.printf("Expiration: %d\n", tokenResponse.expires_in());
+        assert tokenResponse.expires_in() > 0 : "Token deveria experirar em um tempo válido";
     }
 
 }

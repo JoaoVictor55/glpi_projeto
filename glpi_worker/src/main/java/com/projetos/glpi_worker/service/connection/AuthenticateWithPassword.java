@@ -22,7 +22,6 @@ public class AuthenticateWithPassword implements Authenticate {
 
     private final GlpiConnectionProperties properties;
     private final WebClient webClient;
-    private TokenResponse tokenResponse;
     private final GlpiConstants.ParamsPasswordAuth paramsAuth = new GlpiConstants.ParamsPasswordAuth();
     private final String grantTypePassword = "password";
 
@@ -33,32 +32,10 @@ public class AuthenticateWithPassword implements Authenticate {
             .build();
     }
     
-
-
-    public String getToken() {
     
-        return (tokenResponse == null) ? null : tokenResponse.access_token();
-    }
-
-    public String getTokenType() {
+    public TokenResponse authenticate(int timeoutSeconds) throws WebClientException{
         
-        return (tokenResponse == null) ? null : tokenResponse.token_type();
-    }
-
-    public Integer getExpiresIn() {
-
-        return (tokenResponse == null) ? null : tokenResponse.expires_in();
-    }
-
-    public String getRefreshToken() {
-        
-        return (tokenResponse == null) ? null : tokenResponse.refresh_token();
-    }
-
-    
-    public void authenticate() throws WebClientException{
-        
-        tokenResponse = this.webClient.post()
+        TokenResponse tokenResponse = this.webClient.post()
         .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
         .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), grantTypePassword)
                 .with(paramsAuth.getClientId(), properties.clientId())
@@ -68,9 +45,33 @@ public class AuthenticateWithPassword implements Authenticate {
                 .with(paramsAuth.getScope(), properties.scope()))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
-        .timeout(Duration.ofSeconds(2))
+        .timeout(Duration.ofSeconds(timeoutSeconds))
         .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException("API took too long to reply"))
         .block();
 
+        return tokenResponse;
+
 }
+
+
+    @Override
+    public TokenResponse refreshToken(String refreshToken, int timeoutSeconds) {
+        
+        var responseToken = this.webClient.post()
+        .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
+        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), grantTypePassword)
+                .with(paramsAuth.getClientId(), properties.clientId())
+                .with(paramsAuth.getClientSecret(), properties.clientSecret())
+                .with(paramsAuth.getRefreshToken(), refreshToken))
+        .retrieve()
+        .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
+        .timeout(Duration.ofSeconds(timeoutSeconds))
+        .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException("API took too long to reply"))
+        .block();
+
+        return responseToken;
+        
+    }
+
+
 }
