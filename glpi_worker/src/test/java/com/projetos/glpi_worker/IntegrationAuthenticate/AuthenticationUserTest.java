@@ -36,7 +36,8 @@ public class AuthenticationUserTest {
         var tokenResponse = authUser.authenticate(2);
 
         System.out.printf("Expiration: %d\n", tokenResponse.expires_in());
-        assert tokenResponse.expires_in() > 0 : "Token deveria experirar em um tempo válido";
+        assert tokenResponse.expires_in() > 0 : "Token deveria expirar em um tempo válido";
     }
+
 
 }

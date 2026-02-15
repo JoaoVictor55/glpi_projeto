@@ -14,7 +14,7 @@ public class RefreshingTokenManager implements TokenManager {
     private volatile TokenResponse tokenResponse;
     private volatile Instant expiryTime;
     private final Object lock = new Object();
-
+    
     public String getToken(int timeoutSeconds) {
         if (!isTokenValid()) {
             ensureAuthenticated(timeoutSeconds, true);
@@ -29,38 +29,29 @@ public class RefreshingTokenManager implements TokenManager {
     }
 
 
-private void ensureAuthenticated(int timeoutSeconds, boolean useRefresh) {
-    synchronized (lock) {
-        if (!isTokenValid()) {
-            TokenResponse response;
-            try {
+    private void ensureAuthenticated(int timeoutSeconds, boolean useRefresh) {
+        synchronized (lock) {
+            // Re-checa dentro do lock (Double-Checked Locking)
+            if (!isTokenValid()) {
+                TokenResponse response;
+                
                 if (useRefresh && tokenResponse != null) {
-                    // Tenta atualizar
                     response = authenticate.refreshToken(tokenResponse.access_token(), timeoutSeconds);
                 } else {
-                    // Login inicial
                     response = authenticate.authenticate(timeoutSeconds);
                 }
-            } catch (Exception e) {
-                // Se o refresh falhar 
-                if (useRefresh) {
-                    
-                    response = authenticate.authenticate(timeoutSeconds); 
-                } else {
-                    
-                    throw e; 
-                }
-            }
 
-            // Atualização atômica do estado
-            Instant expiration = Instant.now().plusSeconds(response.expires_in());
-            this.expiryTime = expiration;
-            this.tokenResponse = response;
+                // Cálculo local para garantir atomicidade na visão das outras threads
+                Instant expiration = Instant.now().plusSeconds(response.expires_in());
+
+                // Ordem importa: primeiro o que completa o estado, por último o volatile principal
+                this.expiryTime = expiration;
+                this.tokenResponse = response;
+            }
         }
     }
-}
 
-private boolean isTokenValid() {
+    private boolean isTokenValid() {
         // Como ambos são volatile, a leitura aqui é thread-safe
         return tokenResponse != null && expiryTime != null && 
                Instant.now().isBefore(expiryTime.minusSeconds(60));

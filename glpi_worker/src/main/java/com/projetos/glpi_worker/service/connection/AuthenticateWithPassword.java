@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import com.projetos.glpi_worker.Constants.GlpiConstants;
 
 import io.netty.handler.timeout.WriteTimeoutException;
+import reactor.core.publisher.Mono;
 
 @Component
 public class AuthenticateWithPassword implements Authenticate {
@@ -71,6 +72,5 @@ public class AuthenticateWithPassword implements Authenticate {
         return responseToken;
         
     }
-
 
 }

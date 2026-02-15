@@ -7,6 +7,7 @@ public interface Authenticate {
 
     TokenResponse authenticate(int timeoutSeconds);
     TokenResponse refreshToken(String refreshToken, int timeoutSeconds);
+    
 
 
 }
