@@ -9,7 +9,8 @@ public record GlpiConnectionProperties(
     String clientSecret,
     String username,
     String password,
-    String scope
+    String scope,
+    String apiEndpoint
 
 ) {
 

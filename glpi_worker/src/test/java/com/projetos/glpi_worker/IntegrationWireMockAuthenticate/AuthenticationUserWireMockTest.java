@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClientException;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.projetos.glpi_worker.service.connection.AuthenticateUser;
+import com.projetos.glpi_worker.service.connection.AuthenticateWithPassword;
 import com.projetos.glpi_worker.service.connection.GlpiConnectionProperties;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -18,7 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @WireMockTest(httpPort = 8081)
 public class AuthenticationUserWireMockTest {
 
-    private AuthenticateUser authenticateUser;
+    private AuthenticateWithPassword authenticateUser;
 
     @BeforeEach
     void setup() {
@@ -30,10 +30,11 @@ public class AuthenticationUserWireMockTest {
             "test-client-secret",
             "test-user",
             "test-pass",
-            "test-scope"
+            "test-scope",
+            "/api.php/token"
         );
         
-        authenticateUser = new AuthenticateUser(config);
+        authenticateUser = new AuthenticateWithPassword(config);
     }
 
     @Test

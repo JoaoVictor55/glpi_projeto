@@ -1,5 +1,7 @@
 package com.projetos.glpi_worker.service.connection;
 
+import java.time.Duration;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.context.annotation.Configuration;
@@ -11,15 +13,20 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
+import com.projetos.glpi_worker.Constants.GlpiConstants;
+
+import io.netty.handler.timeout.WriteTimeoutException;
+
 @Component
-public class AuthenticateUser implements Authenticate {
+public class AuthenticateWithPassword implements Authenticate {
 
     private final GlpiConnectionProperties properties;
     private final WebClient webClient;
     private TokenResponse tokenResponse;
+    private final GlpiConstants.ParamsPasswordAuth paramsAuth = new GlpiConstants.ParamsPasswordAuth();
+    private final String grantTypePassword = "password";
 
-
-    public AuthenticateUser(GlpiConnectionProperties properties) {
+    public AuthenticateWithPassword(GlpiConnectionProperties properties) {
         this.properties = properties;
         this.webClient = WebClient.builder()
             .baseUrl(properties.url())
@@ -52,15 +59,18 @@ public class AuthenticateUser implements Authenticate {
     public void authenticate() throws WebClientException{
         
         tokenResponse = this.webClient.post()
-        .uri("/api.php/token")
-        .body(BodyInserters.fromFormData("grant_type", "password")
-                .with("client_id", properties.clientId())
-                .with("client_secret", properties.clientSecret())
-                .with("username", properties.username())
-                .with("password", properties.password())
-                .with("scope", properties.scope()))
+        .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
+        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), grantTypePassword)
+                .with(paramsAuth.getClientId(), properties.clientId())
+                .with(paramsAuth.getClientSecret(), properties.clientSecret())
+                .with(paramsAuth.getUsername(), properties.username())
+                .with(paramsAuth.getPassword(), properties.password())
+                .with(paramsAuth.getScope(), properties.scope()))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
+        .timeout(Duration.ofSeconds(2))
+        .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException("API took too long to reply"))
         .block();
+
 }
 }

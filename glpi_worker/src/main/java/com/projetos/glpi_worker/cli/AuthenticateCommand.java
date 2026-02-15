@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.command.annotation.Command;
 import org.springframework.stereotype.Component;
 
-import com.projetos.glpi_worker.service.connection.AuthenticateUser;
+import com.projetos.glpi_worker.service.connection.AuthenticateWithPassword;
 
 @Component
 public class AuthenticateCommand {
 
     @Autowired
-    private AuthenticateUser auth;
+    private AuthenticateWithPassword auth;
 
 
     @Command(name = "authenticate", description = "Authenticate with GLPI", group = "GLPI",
