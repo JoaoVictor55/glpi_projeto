@@ -20,6 +20,17 @@ public class AuthenticationUserTest {
     }
 
     @Test
+    void testAuthenticateAndRefreshToken() {
+        var tokenResponse = authUser.authenticate(2);
+        var refreshToken = tokenResponse.refresh_token();
+
+        var newTokenResponse = authUser.refreshToken(refreshToken, 2);
+
+        assert !newTokenResponse.access_token().isEmpty() : "Novo token de autenticação deve ser gerado";
+        assert !newTokenResponse.refresh_token().isEmpty() : "Novo token de atualização deve ser gerado";
+    }
+
+    @Test
     void testExperiationTime(){
 
         var tokenResponse = authUser.authenticate(2);
