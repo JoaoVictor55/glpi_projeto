@@ -13,7 +13,8 @@ public class GlpiConstants {
         private String clientId = "client_id";
         private String clientSecret = "client_secret";
         private String username = "username";
-        private String password = "password";
+        private String grantTypePassword = "password";
+        private String grantTypeRefresh = "refresh_token";
         private String scope = "scope";
         private String apiEndpointAuth = "/token";
         private String refreshToken = "refresh_token";

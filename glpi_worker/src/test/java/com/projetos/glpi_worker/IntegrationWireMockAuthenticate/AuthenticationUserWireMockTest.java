@@ -88,4 +88,6 @@ public class AuthenticationUserWireMockTest {
 
         assertThrows(Exception.class, () -> authenticateUser.authenticate(2));
     }
+
+ 
 }

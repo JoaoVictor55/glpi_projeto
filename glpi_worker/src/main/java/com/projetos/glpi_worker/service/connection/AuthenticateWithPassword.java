@@ -23,7 +23,6 @@ public class AuthenticateWithPassword implements Authenticate {
     private final GlpiConnectionProperties properties;
     private final WebClient webClient;
     private final GlpiConstants.ParamsPasswordAuth paramsAuth = new GlpiConstants.ParamsPasswordAuth();
-    private final String grantTypePassword = "password";
 
     public AuthenticateWithPassword(GlpiConnectionProperties properties) {
         this.properties = properties;
@@ -37,11 +36,11 @@ public class AuthenticateWithPassword implements Authenticate {
         
         TokenResponse tokenResponse = this.webClient.post()
         .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
-        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), grantTypePassword)
+        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), paramsAuth.getGrantTypePassword())
                 .with(paramsAuth.getClientId(), properties.clientId())
                 .with(paramsAuth.getClientSecret(), properties.clientSecret())
                 .with(paramsAuth.getUsername(), properties.username())
-                .with(paramsAuth.getPassword(), properties.password())
+                .with(paramsAuth.getGrantTypePassword(), properties.password())
                 .with(paramsAuth.getScope(), properties.scope()))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
@@ -59,14 +58,14 @@ public class AuthenticateWithPassword implements Authenticate {
         
         var responseToken = this.webClient.post()
         .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
-        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), grantTypePassword)
+        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), paramsAuth.getGrantTypeRefresh())
                 .with(paramsAuth.getClientId(), properties.clientId())
                 .with(paramsAuth.getClientSecret(), properties.clientSecret())
                 .with(paramsAuth.getRefreshToken(), refreshToken))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
         .timeout(Duration.ofSeconds(timeoutSeconds))
-        .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException("API took too long to reply"))
+        .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException("API took too long to reply"))  
         .block();
 
         return responseToken;
