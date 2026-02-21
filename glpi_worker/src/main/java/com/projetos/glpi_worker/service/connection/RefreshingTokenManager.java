@@ -52,7 +52,11 @@ public class RefreshingTokenManager implements TokenManager {
     }
 
     private boolean isTokenValid() {
-        // Como ambos são volatile, a leitura aqui é thread-safe
+        // volatile: leitura atômica e visibilidade garantida
+        //entre as threads.
+        //internamente, a variável não é "cacheada" localmente (na tread); mas atualizada diretamente na memória principal, garantindo que todas as threads vejam a versão mais recente.
+        //e volatile é atômico para tipos primitivos, exceto 
+        //em operações compostas
         return tokenResponse != null && expiryTime != null && 
                Instant.now().isBefore(expiryTime.minusSeconds(60));
     }
