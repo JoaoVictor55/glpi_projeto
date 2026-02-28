@@ -80,13 +80,15 @@ public class AuthenticationUserWireMockTest {
     @Test
     void testAuthenticationDelayResponse(){
 
+        //testa se a classe espera por um tempo máximo antes de lançar uma exceção
+
         stubFor(post(urlEqualTo("/api.php/token"))
         .withRequestBody(containing("grant_type=password"))
         .willReturn(aResponse()
         .withStatus(200)
         .withFixedDelay(2000)));
 
-        assertThrows(Exception.class, () -> authenticateUser.authenticate(2));
+        assertThrows(RuntimeException.class, () -> authenticateUser.authenticate(2));
     }
 
  
