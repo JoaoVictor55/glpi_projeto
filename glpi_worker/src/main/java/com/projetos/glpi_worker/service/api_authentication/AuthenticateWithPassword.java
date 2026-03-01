@@ -1,4 +1,4 @@
-package com.projetos.glpi_worker.service.connection;
+package com.projetos.glpi_worker.service.api_authentication;
 
 import java.time.Duration;
 
@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
-import com.projetos.glpi_worker.Constants.GlpiConstants;
+import com.projetos.glpi_worker.constants.GlpiConstants;
 
 import io.netty.handler.timeout.WriteTimeoutException;
 import reactor.core.publisher.Mono;

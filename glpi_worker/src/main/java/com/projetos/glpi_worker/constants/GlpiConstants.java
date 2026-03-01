@@ -1,4 +1,4 @@
-package com.projetos.glpi_worker.Constants;
+package com.projetos.glpi_worker.constants;
 
 import lombok.Getter;
 

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClientException;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.projetos.glpi_worker.service.connection.AuthenticateWithPassword;
-import com.projetos.glpi_worker.service.connection.GlpiConnectionProperties;
+import com.projetos.glpi_worker.service.api_authentication.AuthenticateWithPassword;
+import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 

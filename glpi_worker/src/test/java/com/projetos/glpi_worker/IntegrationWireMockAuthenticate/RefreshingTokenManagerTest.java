@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.projetos.glpi_worker.service.connection.Authenticate;
-import com.projetos.glpi_worker.service.connection.RefreshingTokenManager;
-import com.projetos.glpi_worker.service.connection.TokenResponse;
+import com.projetos.glpi_worker.service.api_authentication.Authenticate;
+import com.projetos.glpi_worker.service.api_authentication.RefreshingTokenManager;
+import com.projetos.glpi_worker.service.api_authentication.TokenResponse;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

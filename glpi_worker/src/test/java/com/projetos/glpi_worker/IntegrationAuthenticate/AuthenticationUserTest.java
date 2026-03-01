@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import com.projetos.glpi_worker.service.connection.AuthenticateWithPassword;
+import com.projetos.glpi_worker.service.api_authentication.AuthenticateWithPassword;
 
 @SpringBootTest
 public class AuthenticationUserTest {

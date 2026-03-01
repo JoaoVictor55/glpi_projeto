@@ -1,4 +1,4 @@
-package com.projetos.glpi_worker.service.connection;
+package com.projetos.glpi_worker.service.api_authentication;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
