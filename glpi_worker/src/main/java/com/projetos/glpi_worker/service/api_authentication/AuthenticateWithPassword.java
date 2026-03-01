@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
-import com.projetos.glpi_worker.constants.GlpiConstants;
+import com.projetos.glpi_worker.constants.GlpiAuthParams;
 
 import io.netty.handler.timeout.WriteTimeoutException;
 
@@ -16,7 +16,6 @@ public class AuthenticateWithPassword implements Authenticate {
 
     private final GlpiConnectionProperties properties;
     private final WebClient webClient;
-    private final GlpiConstants.ParamsPasswordAuth paramsAuth = new GlpiConstants.ParamsPasswordAuth();
 
     public AuthenticateWithPassword(GlpiConnectionProperties properties) {
         this.properties = properties;
@@ -29,13 +28,13 @@ public class AuthenticateWithPassword implements Authenticate {
     public TokenResponse authenticate(int timeoutSeconds) throws WebClientException{
         
         TokenResponse tokenResponse = this.webClient.post()
-        .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
-        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), paramsAuth.getGrantTypePassword())
-                .with(paramsAuth.getClientId(), properties.clientId())
-                .with(paramsAuth.getClientSecret(), properties.clientSecret())
-                .with(paramsAuth.getUsername(), properties.username())
-                .with(paramsAuth.getGrantTypePassword(), properties.password())
-                .with(paramsAuth.getScope(), properties.scope()))
+        .uri(properties.apiEndpoint() + GlpiAuthParams.ENDPOINT_AUTH.getValue())
+        .body(BodyInserters.fromFormData(GlpiAuthParams.GRANT_TYPE.getValue(), GlpiAuthParams.PASSWORD.getValue())
+        .with(GlpiAuthParams.CLIENT_ID.getValue(), properties.clientId())
+        .with(GlpiAuthParams.CLIENT_SECRET.getValue(), properties.clientSecret())
+        .with(GlpiAuthParams.USERNAME.getValue(), properties.username())
+        .with(GlpiAuthParams.PASSWORD.getValue(), properties.password())
+        .with(GlpiAuthParams.SCOPE.getValue(), properties.scope()))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
         .timeout(Duration.ofSeconds(timeoutSeconds))
@@ -51,11 +50,11 @@ public class AuthenticateWithPassword implements Authenticate {
     public TokenResponse refreshToken(String refreshToken, int timeoutSeconds) {
         
         var responseToken = this.webClient.post()
-        .uri(properties.apiEndpoint()+paramsAuth.getApiEndpointAuth())
-        .body(BodyInserters.fromFormData(paramsAuth.getGrantType(), paramsAuth.getGrantTypeRefresh())
-                .with(paramsAuth.getClientId(), properties.clientId())
-                .with(paramsAuth.getClientSecret(), properties.clientSecret())
-                .with(paramsAuth.getRefreshToken(), refreshToken))
+        .uri(properties.apiEndpoint() + GlpiAuthParams.ENDPOINT_AUTH.getValue())
+        .body(BodyInserters.fromFormData(GlpiAuthParams.GRANT_TYPE.getValue(), GlpiAuthParams.REFRESH_TOKEN_PARAM.getValue())
+        .with(GlpiAuthParams.CLIENT_ID.getValue(), properties.clientId())
+        .with(GlpiAuthParams.CLIENT_SECRET.getValue(), properties.clientSecret())
+        .with(GlpiAuthParams.REFRESH_TOKEN_PARAM.getValue(), refreshToken))
         .retrieve()
         .bodyToMono(TokenResponse.class) // O Spring converte o JSON aqui
         .timeout(Duration.ofSeconds(timeoutSeconds))

@@ -16,7 +16,7 @@ public class AuthenticationUserTest {
     // Testa a autenticação básica, garantindo que um token válido seja gerado.
     @Test
     void toAuthenticate() {
-        var tokenResponse = authUser.authenticate(2);
+        var tokenResponse = authUser.authenticate(3);
         assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
         System.out.println("Token gerado: " + tokenResponse.access_token());
     }
