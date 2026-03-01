@@ -2,13 +2,7 @@ package com.projetos.glpi_worker.service.api_authentication;
 
 import java.time.Duration;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.ConstructorBinding;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.StreamingHttpOutputMessage.Body;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -16,7 +10,6 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import com.projetos.glpi_worker.constants.GlpiConstants;
 
 import io.netty.handler.timeout.WriteTimeoutException;
-import reactor.core.publisher.Mono;
 
 @Component
 public class AuthenticateWithPassword implements Authenticate {
