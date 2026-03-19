@@ -24,8 +24,11 @@ public class GetRequestTest {
     @Autowired
     private TimeoutGetRequest timeoutGetRequest;
 
+    //faz uma requisição get e solicita um número de asset, verificando se o número solicitado chega.
     @Test
     void authenticateAndGetAsset(){
+
+        int limit = 3;
 
         //asseguramos que conseguimos fazer a autenticação
         TokenResponse tokenResponse = authUser.authenticate(3);
@@ -34,7 +37,7 @@ public class GetRequestTest {
         //requisita três computadores
         ReadOnlyRequest params = new ReadOnlyRequest(
             "/Assets/Computer", tokenResponse.access_token(), 15,
-            null, null, "3", 
+            null, null, Integer.toString(limit), 
             null);
 
         System.out.println("Token gerado: " + tokenResponse.access_token());
@@ -43,9 +46,35 @@ public class GetRequestTest {
         Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, params);
             
         StepVerifier.create(response)
-        .expectNextCount(3)
+        .expectNextCount(limit)
         .expectComplete()
         .verify();
     }
 
+    @Test
+    void authenticateFilterAndGetAsset(){
+
+        int limit = 1;
+        String value = "PC-FIN-001";
+        String rsqlString = "name=="+value;
+
+
+        TokenResponse tokenResponse = authUser.authenticate(3);
+        assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
+
+        ReadOnlyRequest params = new ReadOnlyRequest(
+            "/Assets/Computer", tokenResponse.access_token(), 15,
+            rsqlString, null, Integer.toString(limit), 
+            null);
+
+        System.out.println("Token gerado: " + tokenResponse.access_token());
+
+        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, params);
+
+        StepVerifier.create(response)
+        .expectNextMatches(computer -> computer.getName().equals(value))
+        .expectComplete()
+        .verify();
+
+    }
 }

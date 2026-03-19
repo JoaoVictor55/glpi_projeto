@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.projetos.glpi_worker.constants.ErrorMessages;
 import com.projetos.glpi_worker.constants.GlpiHeaderParams;
 import com.projetos.glpi_worker.constants.GlpiQueryParams;
+import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
+
 import io.netty.handler.timeout.WriteTimeoutException;
 import reactor.core.publisher.Flux;
 
@@ -19,12 +21,16 @@ public class TimeoutGetRequest implements ReadOnly {
 
     private final WebClient webClient;
 
-    private String baseUrl = "http://localhost";
-    private String glpiEndpoint = "/api.php";
+    //private String baseUrl = "http://localhost";
+    //private String glpiEndpoint = "/api.php";
 
-    public TimeoutGetRequest(){
+    private String baseUrl;
+    private String glpiEndpoint;
+    
+    public TimeoutGetRequest(GlpiConnectionProperties glpiConnectionProperties){
 
-
+        this.baseUrl = glpiConnectionProperties.url();
+        this.glpiEndpoint = glpiConnectionProperties.apiEndpoint();
         this.webClient = WebClient.builder().baseUrl(baseUrl+glpiEndpoint).build();
     }
 
