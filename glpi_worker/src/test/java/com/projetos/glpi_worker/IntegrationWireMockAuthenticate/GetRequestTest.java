@@ -10,7 +10,7 @@ import com.projetos.glpi_worker.domain.assets.Computer;
 import com.projetos.glpi_worker.service.api_authentication.AuthenticateWithPassword;
 import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
 import com.projetos.glpi_worker.service.api_communication.ReadOnlyRequest;
-import com.projetos.glpi_worker.service.api_communication.TimeoutGetRequest;
+import com.projetos.glpi_worker.service.api_communication.TimeoutRequestMaker;
 
 import io.netty.handler.timeout.TimeoutException;
 import reactor.core.publisher.Flux;
@@ -27,7 +27,7 @@ import java.util.List;
 public class GetRequestTest {
 
     private AuthenticateWithPassword authUser;
-    private TimeoutGetRequest timeoutGetRequest;
+    private TimeoutRequestMaker timeoutGetRequest;
 
     @BeforeEach
     void setup() {
@@ -43,7 +43,7 @@ public class GetRequestTest {
             "/api.php"
         );
         
-        timeoutGetRequest = new TimeoutGetRequest(config);
+        timeoutGetRequest = new TimeoutRequestMaker(config);
     }
     @Test
     void apiSlowResponseTimeout(){

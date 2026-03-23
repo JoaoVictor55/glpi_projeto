@@ -11,7 +11,7 @@ import com.projetos.glpi_worker.domain.assets.Computer;
 import com.projetos.glpi_worker.service.api_authentication.AuthenticateWithPassword;
 import com.projetos.glpi_worker.service.api_authentication.TokenResponse;
 import com.projetos.glpi_worker.service.api_communication.ReadOnlyRequest;
-import com.projetos.glpi_worker.service.api_communication.TimeoutGetRequest;
+import com.projetos.glpi_worker.service.api_communication.TimeoutRequestMaker;
 
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -22,7 +22,7 @@ public class GetRequestTest {
     @Autowired
     private AuthenticateWithPassword authUser;
     @Autowired
-    private TimeoutGetRequest timeoutGetRequest;
+    private TimeoutRequestMaker timeoutGetRequest;
 
     //faz uma requisição get e solicita um número de asset, verificando se o número solicitado chega.
     @Test
