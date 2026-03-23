@@ -54,13 +54,14 @@ public class GetRequestTest {
         .verify();
     }
 
+    //faz um get com um filtro baseado num nome
     @Test
     void authenticateFilterAndGetAsset(){
         
         int limit = 1;
         String value = "PC-FIN-001";
         String rsqlString = "name=="+value;
-        String endPoint = "Assets/Computer";
+        String endPoint = "/Assets/Computer";
         int timeout = 15;
 
         TokenResponse tokenResponse = authUser.authenticate(3);
@@ -84,6 +85,26 @@ public class GetRequestTest {
         .expectNextMatches(computer -> computer.getName().equals(value))
         .expectComplete()
         .verify();
+
+    }
+
+    @Test
+    void authenticateAndGetAssetById(){
+        
+        String endPoint = "/Assets/Computer/{id}";
+        int timeout = 15;
+        String id = "3";
+
+        TokenResponse tokenResponse = authUser.authenticate(3);
+        assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
+
+        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, endPoint, endPoint, timeout, null, id);
+
+        StepVerifier.create(response)
+        .expectNextMatches(computer -> computer.getId().equals(id))
+        .expectComplete()
+        .verify();
+
 
     }
 }

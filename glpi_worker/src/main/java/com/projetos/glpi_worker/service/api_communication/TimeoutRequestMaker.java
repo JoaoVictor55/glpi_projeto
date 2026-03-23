@@ -45,17 +45,25 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override
-    public <R> Flux<R> get_request(Class<R>  response, String endPoint, String token, int timeout, Map<String, String> params) {
+    public <R> Flux<R> get_request(Class<R>  response, String endPoint, String token, int timeout, Map<String, String> params,
+         Object ... pathVariables
+    ) {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
-        multiValueMap.setAll(params);
+        if(params != null)
+            multiValueMap.setAll(params);
 
-        return this.webClient.get().uri(
-            
-                uriBuilder -> uriBuilder.path(endPoint)
-                .queryParams(multiValueMap)
-                .build())
+        return this.webClient.get().uri( uriBuilder -> {
+   
+                uriBuilder.path(endPoint);
+
+                if(!multiValueMap.isEmpty())
+                    uriBuilder.queryParams(multiValueMap);
+
+
+                return uriBuilder.build(pathVariables);}
+                )
 
          .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
          .accept(MediaType.APPLICATION_JSON)
