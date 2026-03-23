@@ -1,6 +1,7 @@
 package com.projetos.glpi_worker.service.api_communication;
 
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 import java.util.Map;
 
+@Component
 public class TimeoutRequestMaker implements RequestMaker {
 
 

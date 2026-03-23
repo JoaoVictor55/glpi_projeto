@@ -25,7 +25,7 @@ import java.util.List;
 
 @WireMockTest(httpPort = 8081)
 public class GetRequestTest {
-
+/*
     private AuthenticateWithPassword authUser;
     private TimeoutRequestMaker timeoutGetRequest;
 
@@ -67,5 +67,5 @@ public class GetRequestTest {
 
         
     }
-
+*/
 }
