@@ -93,7 +93,7 @@ public class GetRequestTest {
         
         String endPoint = "/Assets/Computer/{id}";
         int timeout = 15;
-        String id = "3";
+        String id = "1";
 
         TokenResponse tokenResponse = authUser.authenticate(3);
         assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
