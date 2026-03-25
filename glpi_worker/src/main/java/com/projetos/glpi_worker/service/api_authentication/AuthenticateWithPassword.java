@@ -2,6 +2,7 @@ package com.projetos.glpi_worker.service.api_authentication;
 
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,18 +18,17 @@ public class AuthenticateWithPassword implements Authenticate {
     private final GlpiConnectionProperties properties;
     private final WebClient webClient;
 
-    public AuthenticateWithPassword(GlpiConnectionProperties properties) {
+    @Autowired
+    public AuthenticateWithPassword(GlpiConnectionProperties properties, WebClient webClient) {
         this.properties = properties;
-        this.webClient = WebClient.builder()
-            .baseUrl(properties.url())
-            .build();
+        this.webClient = webClient;
     }
     
     
     public TokenResponse authenticate(int timeoutSeconds) throws WebClientException{
         
         TokenResponse tokenResponse = this.webClient.post()
-        .uri(properties.apiEndpoint() + GlpiAuthParams.ENDPOINT_AUTH.getValue())
+        .uri(GlpiAuthParams.ENDPOINT_AUTH.getValue())
         .body(BodyInserters.fromFormData(GlpiAuthParams.GRANT_TYPE.getValue(), GlpiAuthParams.PASSWORD.getValue())
         .with(GlpiAuthParams.CLIENT_ID.getValue(), properties.clientId())
         .with(GlpiAuthParams.CLIENT_SECRET.getValue(), properties.clientSecret())
@@ -50,7 +50,7 @@ public class AuthenticateWithPassword implements Authenticate {
     public TokenResponse refreshToken(String refreshToken, int timeoutSeconds) {
         
         var responseToken = this.webClient.post()
-        .uri(properties.apiEndpoint() + GlpiAuthParams.ENDPOINT_AUTH.getValue())
+        .uri(GlpiAuthParams.ENDPOINT_AUTH.getValue())
         .body(BodyInserters.fromFormData(GlpiAuthParams.GRANT_TYPE.getValue(), GlpiAuthParams.REFRESH_TOKEN_PARAM.getValue())
         .with(GlpiAuthParams.CLIENT_ID.getValue(), properties.clientId())
         .with(GlpiAuthParams.CLIENT_SECRET.getValue(), properties.clientSecret())

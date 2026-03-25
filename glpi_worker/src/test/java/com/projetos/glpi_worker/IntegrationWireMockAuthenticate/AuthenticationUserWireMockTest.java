@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
@@ -19,7 +21,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 public class AuthenticationUserWireMockTest {
 
     private AuthenticateWithPassword authenticateUser;
-
+    
     @BeforeEach
     void setup() {
         
@@ -33,8 +35,8 @@ public class AuthenticationUserWireMockTest {
             "test-scope",
             "/api.php"
         );
-        
-        authenticateUser = new AuthenticateWithPassword(config);
+    
+        authenticateUser = new AuthenticateWithPassword(config, WebClient.builder().baseUrl(config.url() + config.apiEndpoint()).build());
     }
 
     @Test
@@ -52,7 +54,7 @@ public class AuthenticationUserWireMockTest {
         .withBody("{\"access_token\":\"mock-token\",\"token_type\":\"Bearer\", \"expires_in\":3600}"))
         );
 
-        var tokenResponse = authenticateUser.authenticate(2);
+        var tokenResponse = authenticateUser.authenticate(3);
 
         assert tokenResponse.access_token().equals("mock-token") : "Token de autenticação deve ser 'mock-token'";
 
