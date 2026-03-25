@@ -93,7 +93,7 @@ public class GetRequestTest {
         
         String endPoint = "/Assets/Computer/{id}";
         int timeout = 15;
-        String id = "1";
+        int id = 1;
 
         TokenResponse tokenResponse = authUser.authenticate(3);
         assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
@@ -101,7 +101,7 @@ public class GetRequestTest {
         Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, endPoint, endPoint, timeout, null, id);
 
         StepVerifier.create(response)
-        .expectNextMatches(computer -> computer.getId().equals(id))
+        .expectNextMatches(computer -> computer.getId().equals(Integer.toString(id)))
         .expectComplete()
         .verify();
 

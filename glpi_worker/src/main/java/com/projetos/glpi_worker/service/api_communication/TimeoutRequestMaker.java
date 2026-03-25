@@ -13,7 +13,9 @@ import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionPropert
 
 import io.netty.handler.timeout.WriteTimeoutException;
 import reactor.core.publisher.Flux;
+import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
+import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.Map;
 
@@ -33,6 +35,7 @@ public class TimeoutRequestMaker implements RequestMaker {
 
         this.baseUrl = glpiConnectionProperties.url();
         this.glpiEndpoint = glpiConnectionProperties.apiEndpoint();
+
         this.webClient = WebClient.builder().baseUrl(baseUrl+glpiEndpoint).build();
     }
 
