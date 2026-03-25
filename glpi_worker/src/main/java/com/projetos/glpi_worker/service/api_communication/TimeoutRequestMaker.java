@@ -1,5 +1,6 @@
 package com.projetos.glpi_worker.service.api_communication;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,18 +26,10 @@ public class TimeoutRequestMaker implements RequestMaker {
 
     private final WebClient webClient;
 
-    //private String baseUrl = "http://localhost";
-    //private String glpiEndpoint = "/api.php";
+    @Autowired
+    public TimeoutRequestMaker(WebClient webClient){
 
-    private String baseUrl;
-    private String glpiEndpoint;
-    
-    public TimeoutRequestMaker(GlpiConnectionProperties glpiConnectionProperties){
-
-        this.baseUrl = glpiConnectionProperties.url();
-        this.glpiEndpoint = glpiConnectionProperties.apiEndpoint();
-
-        this.webClient = WebClient.builder().baseUrl(baseUrl+glpiEndpoint).build();
+        this.webClient = webClient;
     }
 
 
