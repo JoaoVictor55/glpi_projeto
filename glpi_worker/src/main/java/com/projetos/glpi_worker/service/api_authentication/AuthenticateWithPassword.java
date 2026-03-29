@@ -64,5 +64,6 @@ public class AuthenticateWithPassword implements Authenticate {
         return responseToken;
         
     }
+    
 
 }
