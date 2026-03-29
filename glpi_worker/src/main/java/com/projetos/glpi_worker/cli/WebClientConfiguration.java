@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.netty.handler.logging.LogLevel;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
@@ -38,5 +40,14 @@ public class WebClientConfiguration {
         
         //.builder().baseUrl(this.glpiConnectionProperties.url()+glpiConnectionProperties.apiEndpoint()).build();
         
+    }
+
+    @Bean
+    public CircuitBreaker circuitBreaker(){
+
+        CircuitBreakerRegistry registry = CircuitBreakerRegistry.ofDefaults();
+
+
+        return registry.circuitBreaker("default circuitBreaker");
     }
 }
