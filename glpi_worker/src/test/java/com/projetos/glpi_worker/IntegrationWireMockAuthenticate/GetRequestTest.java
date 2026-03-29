@@ -1,32 +1,26 @@
 package com.projetos.glpi_worker.IntegrationWireMockAuthenticate;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.projetos.glpi_worker.domain.assets.Computer;
-import com.projetos.glpi_worker.service.api_authentication.AuthenticateWithPassword;
 import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
 import com.projetos.glpi_worker.service.api_communication.ReadOnlyRequest;
 import com.projetos.glpi_worker.service.api_communication.TimeoutRequestMaker;
 
-import io.netty.handler.timeout.TimeoutException;
+
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
 
 @WireMockTest(httpPort = 8081)
 public class GetRequestTest {
-/*
-    private AuthenticateWithPassword authUser;
+
+
     private TimeoutRequestMaker timeoutGetRequest;
 
     @BeforeEach
@@ -43,7 +37,8 @@ public class GetRequestTest {
             "/api.php"
         );
         
-        timeoutGetRequest = new TimeoutRequestMaker(config);
+        WebClient webClient = WebClient.builder().baseUrl(config.url()+config.apiEndpoint()).build();
+        timeoutGetRequest = new TimeoutRequestMaker(webClient);
     }
     @Test
     void apiSlowResponseTimeout(){
@@ -63,9 +58,13 @@ public class GetRequestTest {
             null, null, Integer.toString(limit), 
             null);
                 
-        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, params);
+        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class,params.url(),params.token(),params.timeout(),null, null, null, timeout, null, null);
+
+        StepVerifier.create(response)
+        .expectError(RuntimeException.class)
+        .verify();
 
         
     }
-*/
+
 }
