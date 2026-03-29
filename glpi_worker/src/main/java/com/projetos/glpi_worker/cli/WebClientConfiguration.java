@@ -42,12 +42,5 @@ public class WebClientConfiguration {
         
     }
 
-    @Bean
-    public CircuitBreaker circuitBreaker(){
 
-        CircuitBreakerRegistry registry = CircuitBreakerRegistry.ofDefaults();
-
-
-        return registry.circuitBreaker("default circuitBreaker");
-    }
 }
