@@ -10,4 +10,4 @@ Desenvolvimento de uma aplicação de linha de comando para a automoção voltad
 3. Testes com Mockito, Wireframe e Stepverifier
 
 ## Funcionalidades
-[] Identifica o nome de um ativo (definido via regex) no corpo de um chamado aberto por e-mail e vinculá-lo ao chamado
+- [ ] Identifica o nome de um ativo (definido via regex) no corpo de um chamado aberto por e-mail e vinculá-lo ao chamado
