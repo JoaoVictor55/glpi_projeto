@@ -27,20 +27,20 @@ logs/
 *.log
 
 # IDE files and directories
-.idea/             # IntelliJ IDEA
-.vscode/           # VS Code
-.settings/         # Eclipse
-.project           # Eclipse
-.classpath         # Eclipse
-.sts4-cache/       # Spring Tools Suite
+.idea/
+.vscode/
+.settings/
+.project
+.classpath
+.sts4-cache/
 
 # Spring Boot specific
-.env               # environment files
-*.properties.local # local properties files
+.env
+*.properties.local
 
 # Operating System Files
-.DS_Store          # macOS
-Thumbs.db          # Windows
+.DS_Store
+Thumbs.db
 
 # Other files to ignore
-docs/              # Documentation files
+docs/
