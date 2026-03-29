@@ -1,0 +1,24 @@
+flowchart TD
+    start([Início])
+
+    start --> checkQueue{Fila de tarefas<br/>possui itens?}
+
+    checkQueue -- Não --> sleep[Administrador dorme]
+    sleep --> checkQueue
+
+    checkQueue -- Sim --> selectTask[Selecionar próxima tarefa]
+
+    subgraph Administrador
+        selectTask --> dispatch[Despachar tarefa]
+    end
+
+    subgraph Componente_de_Ação
+        dispatch --> executeAction[Executar ação específica]
+    end
+
+    subgraph Comunicador
+        executeAction --> callAPI[Comunicar com API do GLPI]
+    end
+
+    callAPI --> updateTask[Atualizar status da tarefa]
+    updateTask --> checkQueue
