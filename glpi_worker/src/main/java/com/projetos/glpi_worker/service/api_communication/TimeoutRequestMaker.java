@@ -1,5 +1,8 @@
 package com.projetos.glpi_worker.service.api_communication;
 
+import java.time.Duration;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -9,16 +12,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.projetos.glpi_worker.constants.ErrorMessages;
 import com.projetos.glpi_worker.constants.GlpiHeaderParams;
-import com.projetos.glpi_worker.constants.GlpiQueryParams;
-import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
 
 import io.netty.handler.timeout.WriteTimeoutException;
 import reactor.core.publisher.Flux;
-import reactor.netty.transport.logging.AdvancedByteBufFormat;
-
-import java.net.http.HttpClient;
-import java.time.Duration;
-import java.util.Map;
 
 @Component
 public class TimeoutRequestMaker implements RequestMaker {
