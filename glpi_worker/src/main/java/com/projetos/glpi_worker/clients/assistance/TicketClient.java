@@ -25,15 +25,15 @@ public class TicketClient {
         this.requestMaker = requestMaker;
     }
 
-    public Mono<TicketResponse> getTicketById(String id, String token, Integer timeOut){
+    public Mono<TicketResponse> getTicketById(int id, String token, Integer timeout){
 
 
-        return requestMaker.get_request(TicketResponse.class, AssistanceEndPoints.TICKET.toString(), token, timeOut, null,timeOut).next();
+        return requestMaker.get_request(TicketResponse.class, AssistanceEndPoints.TICKET.toString(), token, timeout, null,id).next();
     }
     
-    public Flux<TicketResponse> getTickets(){
+    public Flux<TicketResponse> getTickets(int id, String token, Integer timeout, Map<String, String> requestParams){
 
-        return null;
+        return requestMaker.get_request(TicketResponse.class, AssistanceEndPoints.TICKET.toString(), token, timeout, requestParams);
     }
 
 }

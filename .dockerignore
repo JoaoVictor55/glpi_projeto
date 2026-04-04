@@ -1,0 +1,30 @@
+#build artifacts 
+target/
+build/
+out/
+
+#version control
+.git/
+.gitignore
+
+#maven
+.mvn/
+mvnw
+mvnw.cmd
+
+#ignore IDE content
+.idea/
+.vscode/
+*.iml
+
+#ignore logs
+logs/
+*.log
+.env
+docker-compose*.yml
+
+# Other files to ignore
+docs/
+glpi_worker.zip
+*.md
+LICENSE
