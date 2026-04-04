@@ -1,4 +1,4 @@
-package com.projetos.glpi_worker.cli;
+package com.projetos.glpi_worker.configuration;
 
 import java.io.IOException;
 import java.rmi.registry.Registry;

@@ -1,4 +1,4 @@
-package com.projetos.glpi_worker.cli;
+package com.projetos.glpi_worker.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.projetos.glpi_worker.service.api_authentication.GlpiConnectionProperties;
 
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.netty.handler.logging.LogLevel;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
