@@ -1,0 +1,18 @@
+services:
+  glpi-automocao:
+    #image: glpi-automocao:latest
+    build: .
+    stdin_open: true
+    tty: true
+    environment:
+      - glpi_url=http://localhost
+      - glpi_endpoint=/api.php
+      - glpi_client_id=${glpi_client_id}
+      - glpi_client_secret=${glpi_client_secret}
+      - glpi_username=${glpi_username}
+      - glpi_password=${glpi_password}
+
+#define a rede 
+networks:
+  glpi-mail:
+    external: true

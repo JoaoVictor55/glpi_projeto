@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono;
 
 
 
-@Component
+
 public class TicketClient {
 
     private RequestMaker requestMaker;
 
-    @Autowired
+    
     public TicketClient(RequestMaker requestMaker){
 
         this.requestMaker = requestMaker;
