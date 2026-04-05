@@ -1,5 +1,6 @@
 #Estágio 1: Build
-FROM maven:3.9-eclipse-temurin-17 AS build
+#FROM maven:3.9-eclipse-temurin-21 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copia apenas o pom.xml primeiro para baixar as dependências (otimiza cache)
@@ -8,9 +9,9 @@ RUN mvn dependency:go-offline
 
 # Copia o código fonte e gera o .jar
 COPY glpi_worker/src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -e
 
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 # Copia apenas o arquivo .jar gerado no estágio anterior

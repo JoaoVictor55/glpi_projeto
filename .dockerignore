@@ -28,3 +28,4 @@ docs/
 glpi_worker.zip
 *.md
 LICENSE
+docker_images/
