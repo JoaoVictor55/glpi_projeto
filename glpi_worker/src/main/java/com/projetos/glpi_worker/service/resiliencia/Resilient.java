@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projetos.glpi_worker.service.api_communication.RequestMaker;
-import com.projetos.glpi_worker.service.api_communication.WriteOnlyRequest;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
@@ -30,12 +29,6 @@ public class Resilient implements RequestMaker{
         this.retry = retry;
     }
 
-    @Override
-    public <R> R deleteRequest(int timeout, int id_to_delete, int subId_to_delete, Boolean isRecursive,
-            Integer entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteRequest'");
-    }
 
     @Override
     public <R> Flux<R> get_request(Class<R> response, String endPoint, String token, int timeout,
@@ -51,16 +44,30 @@ public class Resilient implements RequestMaker{
        
     }
 
+
     @Override
-    public <R, P> R post_request(P bodyParams, WriteOnlyRequest requestParams) {
+    public void deleteRequest(String endpoint, String token, int timeout, int id, Map<String, String> params,
+            Object... pathVariables) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteRequest'");
+    }
+
+
+    @Override
+    public <R, P> R post_request(P requestBody, String endpoint, String token, int timeout, Map<String, String> params,
+            Object... pathVariables) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'post_request'");
     }
 
+
     @Override
-    public <R, P> R patch_request(P bodyParams, int timeout, int idToPatch, Boolean isRecursive, Integer entity) {
+    public <R, P> R patch_request(P requestBody, String endPoint, String token, int timeout, int idToPatch,
+            Map<String, String> params, Object... pathVariables) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'patch_request'");
     }
+
+
 
 }
