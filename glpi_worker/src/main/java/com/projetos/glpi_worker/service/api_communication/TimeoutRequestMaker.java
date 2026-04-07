@@ -34,17 +34,17 @@ public class TimeoutRequestMaker implements RequestMaker {
          Object ... pathVariables
     ) {
 
-        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-
-        if(params != null)
-            multiValueMap.setAll(params);
 
         return this.webClient.get().uri( uriBuilder -> {
    
                 uriBuilder.path(endPoint);
 
-                if(!multiValueMap.isEmpty())
-                    uriBuilder.queryParams(multiValueMap);
+                if(params != null){
+
+                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
+                    buffer.setAll(params);
+                    uriBuilder.queryParams(buffer);
+                }
 
 
                 return uriBuilder.build(pathVariables);}
@@ -66,6 +66,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     public void deleteRequest(String endpoint, String token, int timeout, int id, Map<String, String> params,Object... pathVariables) {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        
 
         if (params != null){
             multiValueMap.setAll(params);
@@ -92,19 +93,61 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override
-    public <R, P> R post_request(P requestBody, String endpoint, String token, int timeout, Map<String, String> params,
+    public <R, P> Flux<R> post_request(P requestBody,Class<R> response, String endpoint, String token, int timeout, Map<String, String> params,
             Object... pathVariables) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'post_request'");
+        
+            
+            return this.webClient.post().uri( uriBuilder -> {
+   
+                uriBuilder.path(endpoint);
+
+                if(params != null){
+
+                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
+                    buffer.setAll(params);
+                    uriBuilder.queryParams(buffer);
+                }
+
+
+                return uriBuilder.build(pathVariables);}
+            )
+
+         .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
+         .bodyValue(requestBody)
+         .retrieve()
+         .bodyToFlux(response)
+         .timeout(Duration.ofSeconds(timeout))
+        .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException(
+            ErrorMessages.TIME_OUT_REQUEST+": "+endpoint, ex));
+
     }
 
     @Override
-    public <R, P> R patch_request(P requestBody, String endPoint, String token, int timeout, int idToPatch,
+    public <R, P> Flux<R> patch_request(P requestBody, Class<R> response,  String endPoint, String token, int timeout, int idToPatch,
             Map<String, String> params, Object... pathVariables) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'patch_request'");
+            
+                return this.webClient.patch().uri( uriBuilder -> {
+   
+                uriBuilder.path(endPoint);
+
+                if(params != null){
+
+                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
+                    buffer.setAll(params);
+                    uriBuilder.queryParams(buffer);
+                }
+
+
+                return uriBuilder.build(pathVariables);}
+            )
+
+         .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
+         .bodyValue(requestBody)
+         .retrieve()
+         .bodyToFlux(response)
+         .timeout(Duration.ofSeconds(timeout))
+        .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException(
+            ErrorMessages.TIME_OUT_REQUEST+": "+endPoint, ex));
     }
-
-
 
 }
