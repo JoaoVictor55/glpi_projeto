@@ -46,7 +46,7 @@ public class Resilient implements RequestMaker{
 
 
     @Override
-    public void deleteRequest(String endpoint, String token, int timeout, int id, Map<String, String> params,
+    public void deleteRequest(String endpoint, String token, int timeout, Map<String, String> params,
             Object... pathVariables) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteRequest'");
@@ -62,7 +62,7 @@ public class Resilient implements RequestMaker{
 
     @Override
     public <R, P> Flux<R> patch_request(P requestBody, Class<R> response, String endPoint, String token,int timeout, 
-      int idToPatch, Map<String, String> params, Object ...pathVariables) {
+       Map<String, String> params, Object ...pathVariables) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'patch_request'");
     }

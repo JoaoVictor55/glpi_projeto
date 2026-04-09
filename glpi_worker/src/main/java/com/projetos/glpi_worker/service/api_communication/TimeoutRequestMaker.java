@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
 import com.projetos.glpi_worker.constants.ErrorMessages;
 import com.projetos.glpi_worker.constants.GlpiHeaderParams;
@@ -63,7 +66,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override //delete não retorna nada e uma exceção será lançada caso o código não seja de sucesso
-    public void deleteRequest(String endpoint, String token, int timeout, int id, Map<String, String> params,Object... pathVariables) {
+    public void deleteRequest(String endpoint, String token, int timeout, Map<String, String> params,Object... pathVariables) {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         
@@ -123,7 +126,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override
-    public <R, P> Flux<R> patch_request(P requestBody, Class<R> response,  String endPoint, String token, int timeout, int idToPatch,
+    public <R, P> Flux<R> patch_request(P requestBody, Class<R> response,  String endPoint, String token, int timeout,
             Map<String, String> params, Object... pathVariables) {
             
                 return this.webClient.patch().uri( uriBuilder -> {
@@ -148,6 +151,49 @@ public class TimeoutRequestMaker implements RequestMaker {
          .timeout(Duration.ofSeconds(timeout))
         .onErrorMap(WriteTimeoutException.class, ex -> new RuntimeException(
             ErrorMessages.TIME_OUT_REQUEST+": "+endPoint, ex));
+    }
+
+
+    private <P>  ResponseSpec buildResponseBody(P requestBody, int timeout, String token,RequestBodySpec request){
+
+        request.header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token);
+
+
+        if(requestBody == null){
+
+            request.accept(MediaType.APPLICATION_JSON);
+            
+        }
+        else{
+
+            request.bodyValue(requestBody);
+            
+        }
+
+        
+        
+       
+
+        return request.retrieve();
+    }
+
+    private RequestBodySpec buildRequestBodySpec(String endpoint,WebClient.RequestBodyUriSpec request,Map<String, String> params,Object ...    pathVariables){
+        
+       return request.uri(uriBuilder -> {
+
+            uriBuilder.path(endpoint);
+            
+            if(params != null){
+
+                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
+                    buffer.setAll(params);
+                    uriBuilder.queryParams(buffer);
+            }
+
+            return uriBuilder.build(pathVariables);}
+        
+        );
+
     }
 
 }

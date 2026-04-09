@@ -6,7 +6,7 @@ import reactor.core.publisher.Flux;
 
 public interface RequestMaker {
 
-     void deleteRequest(String endpoint, String token, int timeout, int id, Map<String, String> params, Object ... pathVariables);
+     void deleteRequest(String endpoint, String token, int timeout,  Map<String, String> params, Object ... pathVariables);
     
      <R> Flux<R> get_request(Class<R>  response, String endPoint, String token,
         int timeout, Map<String, String> params,  Object ... pathVariables); 
@@ -14,5 +14,5 @@ public interface RequestMaker {
       <R, P> Flux<R> post_request(P requestBody, Class<R> response,  String endpoint, String token, int timeout, Map<String, String> params, Object ... pathVariables);
     
      <R, P> Flux<R> patch_request(P requestBody, Class<R> response, String endPoint, String token,int timeout, 
-      int idToPatch, Map<String, String> params, Object ...pathVariables);
+      Map<String, String> params, Object ...pathVariables);
 }
