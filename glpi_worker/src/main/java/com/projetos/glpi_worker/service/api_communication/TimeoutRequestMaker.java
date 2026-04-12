@@ -10,11 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClient.RequestHeadersSpec;
-import org.springframework.web.client.RestClient.RequestHeadersUriSpec;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.util.UriBuilder;
 
 import com.projetos.glpi_worker.constants.ErrorMessages;
@@ -37,7 +33,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override
-    public <R> Flux<R> get_request(Class<R>  response, String endPoint, String token, int timeout, Map<String, String> params,
+    public <R> Flux<R> getRequest(Class<R>  response, String endPoint, String token, int timeout, Map<String, String> params,
          Object ... pathVariables
     ) {
 
@@ -69,7 +65,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override
-    public <R, P> Flux<R> post_request(P requestBody,Class<R> response, String endpoint, String token, int timeout, Map<String, String> params,
+    public <R, P> Flux<R> postRequest(P requestBody,Class<R> response, String endpoint, String token, int timeout, Map<String, String> params,
             Object... pathVariables) {
         
             
@@ -85,7 +81,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     }
 
     @Override
-    public <R, P> Flux<R> patch_request(P requestBody, Class<R> response,  String endPoint, String token, int timeout,
+    public <R, P> Flux<R> patchRequest(P requestBody, Class<R> response,  String endPoint, String token, int timeout,
             Map<String, String> params, Object... pathVariables) {
             
                 return this.webClient.patch().uri(uriFactory(endPoint, params, pathVariables))

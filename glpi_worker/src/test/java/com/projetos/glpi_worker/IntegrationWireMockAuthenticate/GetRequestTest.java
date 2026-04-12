@@ -58,7 +58,7 @@ public class GetRequestTest {
             null, null, Integer.toString(limit), 
             null);
                 
-        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class,params.url(),params.token(),params.timeout(),null, null, null, timeout, null, null);
+        Flux<Computer> response = timeoutGetRequest.getRequest(Computer.class,params.url(),params.token(),params.timeout(),null, null, null, timeout, null, null);
 
         StepVerifier.create(response)
         .expectError(RuntimeException.class)

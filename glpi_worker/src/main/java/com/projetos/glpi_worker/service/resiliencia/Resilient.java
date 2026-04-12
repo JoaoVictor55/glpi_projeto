@@ -31,10 +31,10 @@ public class Resilient implements RequestMaker{
 
 
     @Override
-    public <R> Flux<R> get_request(Class<R> response, String endPoint, String token, int timeout,
+    public <R> Flux<R> getRequest(Class<R> response, String endPoint, String token, int timeout,
             Map<String, String> params, Object... pathVariables) {
         
-        return this.requestMaker.get_request(response, endPoint, token, timeout, params, pathVariables)
+        return this.requestMaker.getRequest(response, endPoint, token, timeout, params, pathVariables)
         .transformDeferred(CircuitBreakerOperator.of(circuitBreaker))
         .transformDeferred(RetryOperator.of(retry))
         .onErrorResume(ex ->{
@@ -54,14 +54,14 @@ public class Resilient implements RequestMaker{
 
 
     @Override
-      public <R, P> Flux<R> post_request(P requestBody, Class<R> response,  String endpoint, String token, int timeout, Map<String, String> params, Object ... pathVariables){
+      public <R, P> Flux<R> postRequest(P requestBody, Class<R> response,  String endpoint, String token, int timeout, Map<String, String> params, Object ... pathVariables){
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'post_request'");
     }
 
 
     @Override
-    public <R, P> Flux<R> patch_request(P requestBody, Class<R> response, String endPoint, String token,int timeout, 
+    public <R, P> Flux<R> patchRequest(P requestBody, Class<R> response, String endPoint, String token,int timeout, 
        Map<String, String> params, Object ...pathVariables) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'patch_request'");

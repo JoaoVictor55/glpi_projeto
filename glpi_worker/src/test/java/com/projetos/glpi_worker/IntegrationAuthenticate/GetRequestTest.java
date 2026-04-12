@@ -41,7 +41,7 @@ public class GetRequestTest {
             "limit", Integer.toString(limit)
         );
 
-        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, endPoint, tokenResponse.access_token(),timeout, getRequestParams);
+        Flux<Computer> response = timeoutGetRequest.getRequest(Computer.class, endPoint, tokenResponse.access_token(),timeout, getRequestParams);
             
         StepVerifier.create(response)
         .expectNextCount(limit)
@@ -71,7 +71,7 @@ public class GetRequestTest {
             "filter", rsqlString
         );
 
-        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, 
+        Flux<Computer> response = timeoutGetRequest.getRequest(Computer.class, 
             endPoint, tokenResponse.access_token(), timeout,
             getRequestParams
         );
@@ -93,7 +93,7 @@ public class GetRequestTest {
         TokenResponse tokenResponse = authUser.authenticate(3);
         assert !tokenResponse.access_token().isEmpty() : "Token de autenticação deve ser gerado";
 
-        Flux<Computer> response = timeoutGetRequest.get_request(Computer.class, endPoint, tokenResponse.access_token(), timeout, null, id);
+        Flux<Computer> response = timeoutGetRequest.getRequest(Computer.class, endPoint, tokenResponse.access_token(), timeout, null, id);
 
         StepVerifier.create(response)
         .expectNextMatches(computer -> computer.getId().equals(Integer.toString(id)))
