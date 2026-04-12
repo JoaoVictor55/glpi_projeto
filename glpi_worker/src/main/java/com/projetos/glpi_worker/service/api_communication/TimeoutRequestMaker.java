@@ -1,17 +1,21 @@
 package com.projetos.glpi_worker.service.api_communication;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient.RequestHeadersSpec;
+import org.springframework.web.client.RestClient.RequestHeadersUriSpec;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
+import org.springframework.web.util.UriBuilder;
 
 import com.projetos.glpi_worker.constants.ErrorMessages;
 import com.projetos.glpi_worker.constants.GlpiHeaderParams;
@@ -38,54 +42,23 @@ public class TimeoutRequestMaker implements RequestMaker {
     ) {
 
 
-        return this.webClient.get().uri( uriBuilder -> {
-   
-                uriBuilder.path(endPoint);
-
-                if(params != null){
-
-                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
-                    buffer.setAll(params);
-                    uriBuilder.queryParams(buffer);
-                }
-
-
-                return uriBuilder.build(pathVariables);}
-                )
-
-         .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
+        return this.webClient.get().uri(uriFactory(endPoint, params, pathVariables))
+        .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
          .accept(MediaType.APPLICATION_JSON)
          .retrieve()
          .bodyToFlux(response)
          .timeout(Duration.ofSeconds(timeout))
         .onErrorMap(ReadTimeoutException.class, ex -> new RuntimeException(
             ErrorMessages.TIME_OUT_REQUEST+": "+endPoint, ex
-        ));
-        //existe um retry, porém é bom deixar quem a chamou cuidar disso :)
+        )); 
         
     }
 
     @Override //delete não retorna nada e uma exceção será lançada caso o código não seja de sucesso
     public void deleteRequest(String endpoint, String token, int timeout, Map<String, String> params,Object... pathVariables) {
 
-        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-        
-
-        if (params != null){
-            multiValueMap.setAll(params);
-        }
-
-        this.webClient.delete().uri(uriBuilder -> {
-
-            uriBuilder.path(endpoint);
-
-            if(params != null){
-                uriBuilder.queryParams(multiValueMap);
-            }
-            
-            return uriBuilder.build(pathVariables);
-
-        }).header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
+        this.webClient.delete().uri(uriFactory(endpoint, params, pathVariables))
+        .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         .bodyToMono(Void.class)
@@ -100,21 +73,7 @@ public class TimeoutRequestMaker implements RequestMaker {
             Object... pathVariables) {
         
             
-            return this.webClient.post().uri( uriBuilder -> {
-   
-                uriBuilder.path(endpoint);
-
-                if(params != null){
-
-                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
-                    buffer.setAll(params);
-                    uriBuilder.queryParams(buffer);
-                }
-
-
-                return uriBuilder.build(pathVariables);}
-            )
-
+            return this.webClient.post().uri( uriFactory(endpoint, params, pathVariables))
          .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
          .bodyValue(requestBody)
          .retrieve()
@@ -129,20 +88,7 @@ public class TimeoutRequestMaker implements RequestMaker {
     public <R, P> Flux<R> patch_request(P requestBody, Class<R> response,  String endPoint, String token, int timeout,
             Map<String, String> params, Object... pathVariables) {
             
-                return this.webClient.patch().uri( uriBuilder -> {
-   
-                uriBuilder.path(endPoint);
-
-                if(params != null){
-
-                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
-                    buffer.setAll(params);
-                    uriBuilder.queryParams(buffer);
-                }
-
-
-                return uriBuilder.build(pathVariables);}
-            )
+                return this.webClient.patch().uri(uriFactory(endPoint, params, pathVariables))
 
          .header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token)
          .bodyValue(requestBody)
@@ -153,46 +99,25 @@ public class TimeoutRequestMaker implements RequestMaker {
             ErrorMessages.TIME_OUT_REQUEST+": "+endPoint, ex));
     }
 
-
-    private <P>  ResponseSpec buildResponseBody(P requestBody, int timeout, String token,RequestBodySpec request){
-
-        request.header(GlpiHeaderParams.AUTHORIZATION.toString(), GlpiHeaderParams.BEARER.toString()+" "+token);
-
-
-        if(requestBody == null){
-
-            request.accept(MediaType.APPLICATION_JSON);
-            
-        }
-        else{
-
-            request.bodyValue(requestBody);
-            
-        }
-
+    private Function<UriBuilder, URI> uriFactory(String endpoint, Map<String, String> params, Object ... pathVariables){
         
-        
-       
 
-        return request.retrieve();
-    }
-
-    private RequestBodySpec buildRequestBodySpec(String endpoint,WebClient.RequestBodyUriSpec request,Map<String, String> params,Object ...    pathVariables){
-        
-       return request.uri(uriBuilder -> {
+        return uriBuilder ->{
 
             uriBuilder.path(endpoint);
-            
+
             if(params != null){
 
-                    MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
-                    buffer.setAll(params);
-                    uriBuilder.queryParams(buffer);
+                MultiValueMap<String, String> buffer = new LinkedMultiValueMap<>();
+
+                buffer.setAll(params);
+
+                uriBuilder.queryParams(buffer);
             }
 
-            return uriBuilder.build(pathVariables);}
-        
-        );
+            return uriBuilder.build(pathVariables);
+        };
+      
 
     }
 
