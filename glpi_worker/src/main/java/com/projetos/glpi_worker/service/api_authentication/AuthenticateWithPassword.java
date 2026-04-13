@@ -11,11 +11,15 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import com.projetos.glpi_worker.constants.GlpiAuthParams;
 
 import io.netty.handler.timeout.WriteTimeoutException;
+import lombok.Getter;
+import lombok.Setter;
 
 @Component
 public class AuthenticateWithPassword implements Authenticate {
 
-    private final GlpiConnectionProperties properties;
+    @Setter
+    @Getter
+    private GlpiConnectionProperties properties;
     private final WebClient webClient;
 
     @Autowired
@@ -23,6 +27,7 @@ public class AuthenticateWithPassword implements Authenticate {
         this.properties = properties;
         this.webClient = webClient;
     }
+    
     
     
     public TokenResponse authenticate(int timeoutSeconds) throws WebClientException{
