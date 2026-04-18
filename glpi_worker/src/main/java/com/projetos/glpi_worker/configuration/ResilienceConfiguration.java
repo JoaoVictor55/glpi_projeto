@@ -8,6 +8,8 @@ import java.util.concurrent.TimeoutException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.projetos.glpi_worker.constants.ResilienceConstants;
+
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.retry.RetryConfig;
@@ -23,7 +25,7 @@ public class ResilienceConfiguration {
         CircuitBreakerRegistry registry = CircuitBreakerRegistry.ofDefaults();
 
 
-        return registry.circuitBreaker("glpiCircuitBreaker");
+        return registry.circuitBreaker(ResilienceConstants.CIRCUIT_BREAKER_NAME_GLPI.name());
     }
 
     @Bean 
@@ -39,7 +41,7 @@ public class ResilienceConfiguration {
 
         RetryRegistry retryRegistry = RetryRegistry.of(config);
 
-        return retryRegistry.retry("glpiRetry");
+        return retryRegistry.retry(ResilienceConstants.RETRY_NAME_GLPI.name());
 
     }
 
