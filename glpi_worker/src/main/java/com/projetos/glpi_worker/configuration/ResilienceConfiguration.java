@@ -19,30 +19,35 @@ import io.github.resilience4j.retry.Retry;
 @Configuration
 public class ResilienceConfiguration {
 
-    @Bean
-    public CircuitBreaker glpiCircuitBreaker(){
 
-        CircuitBreakerRegistry registry = CircuitBreakerRegistry.ofDefaults();
+   @Bean
+    public RetryRegistry makeRetryRegistryGlpiConfigs(){
+
+        return RetryRegistry.ofDefaults();
+
+    }
+
+    @Bean//caso seja chamado mais de uma vez, o spring retorna um cache :)
+    public CircuitBreakerRegistry makeCircuitBreakeregistryGlpiConfigs(){
+
+        return CircuitBreakerRegistry.ofDefaults();
+
+    }
+
+    @Bean
+    public CircuitBreaker glpiCircuitBreaker(CircuitBreakerRegistry registry){
 
 
         return registry.circuitBreaker(ResilienceConstants.CIRCUIT_BREAKER_NAME_GLPI.name());
     }
 
     @Bean 
-    public Retry glpiRetry(){
-
-        RetryConfig config = RetryConfig.custom()
-        .maxAttempts(3)
-        .waitDuration(Duration.ofMillis(500))
-        .retryExceptions(IOException.class, TimeoutException.class)
-        .ignoreExceptions(NullPointerException.class)
-        .build();
+    public Retry glpiRetry(RetryRegistry registry){
 
 
-        RetryRegistry retryRegistry = RetryRegistry.of(config);
-
-        return retryRegistry.retry(ResilienceConstants.RETRY_NAME_GLPI.name());
+        return registry.retry(ResilienceConstants.RETRY_NAME_GLPI.name());
 
     }
+
 
 }

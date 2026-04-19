@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.retry.RetryRegistry;
 
 public class JunitRetryTest {
 
@@ -58,6 +59,25 @@ public class JunitRetryTest {
         }
 
         assertEquals(2, retryCounter.get());
+    }
+
+    @Test
+    void mustChangeRetryConfiguration(){
+
+        RetryRegistry registry = RetryRegistry.ofDefaults();
+
+        Retry retry = registry.retry("teste");
+
+        RetryConfig config = RetryConfig.custom().maxAttempts(10).build();
+
+        int max = config.getMaxAttempts();
+
+
+        registry.replace("retryNew", registry.retry("teste", config));
+
+        assertEquals(max, retry.getRetryConfig().getMaxAttempts());
+        
+
     }
 
 }

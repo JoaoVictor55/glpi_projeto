@@ -35,7 +35,9 @@ public class AuthenticationUserWireMockTest {
             "/api.php"
         );
     
-        authenticateUser = new AuthenticateWithPassword(config, WebClient.builder().baseUrl(config.url() + config.apiEndpoint()).build());
+        authenticateUser = new AuthenticateWithPassword(WebClient.builder().baseUrl(config.url() + config.apiEndpoint()).build());
+
+        authenticateUser.setProperties(config);
     }
 
     @Test

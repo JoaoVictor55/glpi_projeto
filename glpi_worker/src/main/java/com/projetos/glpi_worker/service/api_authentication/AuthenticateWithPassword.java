@@ -23,12 +23,10 @@ public class AuthenticateWithPassword implements Authenticate {
     private final WebClient webClient;
 
     @Autowired
-    public AuthenticateWithPassword(GlpiConnectionProperties properties, WebClient webClient) {
-        this.properties = properties;
+    public AuthenticateWithPassword(WebClient webClient) {
+
         this.webClient = webClient;
     }
-    
-    
     
     public TokenResponse authenticate(int timeoutSeconds) throws WebClientException{
         
